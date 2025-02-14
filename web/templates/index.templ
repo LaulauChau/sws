@@ -1,0 +1,55 @@
+package templates
+
+import "github.com/LaulauChau/sws/internal/models"
+
+templ CoursesTable(courses []models.Course) {
+    <div class="bg-white shadow-md rounded-lg overflow-hidden">
+        <table class="min-w-full">
+            <thead class="bg-gray-800 text-white">
+                <tr>
+                    <th class="px-6 py-3 text-left">Nom</th>
+                    <th class="px-6 py-3 text-left">Date</th>
+                    <th class="px-6 py-3 text-left">Heure</th>
+                    <th class="px-6 py-3 text-left">Code</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
+                for _, course := range courses {
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-6 py-4">{ course.Name }</td>
+                        <td class="px-6 py-4">{ course.Date }</td>
+                        <td class="px-6 py-4">{ course.Start }</td>
+                        <td class="px-6 py-4 font-mono font-bold">{ generateCode(course) }</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+templ Index(courses []models.Course) {
+    @Layout() {
+        <div class="space-y-6">
+            <div class="flex justify-between items-center">
+                <h1 class="text-3xl font-bold text-gray-900">Cours à venir</h1>
+                <button
+                    class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow-sm transition-colors"
+                    hx-get="/refresh"
+                    hx-target="#courses-container"
+                    hx-indicator="#spinner"
+                >
+                    Rafraîchir
+                    <span id="spinner" class="htmx-indicator">
+                        <svg class="animate-spin h-5 w-5 text-white inline ml-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                    </span>
+                </button>
+            </div>
+            <div id="courses-container">
+                @CoursesTable(courses)
+            </div>
+        </div>
+    }
+} 
